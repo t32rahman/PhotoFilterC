@@ -49,7 +49,6 @@ void sepia(int height, int width, RGBTRIPLE image[height][width])
             image[i][j].green = temp[1];
             image[i][j].blue = temp[2];
         }
-
     }
     return;
 }
@@ -95,17 +94,59 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
                 {
                     if (((k >= 0) && (l >= 0)) && ((k < height) && (l < width)))
                     {
-                        sum[0] += (int) img[k][l].rgbtRed;
-                        sum[1] += (int) img[k][l].rgbtGreen;
-                        sum[2] += (int) img[k][l].rgbtBlue;
+                        sum[0] += (int)img[k][l].rgbtRed;
+                        sum[1] += (int)img[k][l].rgbtGreen;
+                        sum[2] += (int)img[k][l].rgbtBlue;
                         sum[3]++;
                     }
                 }
             }
 
-            image[i][j].rgbtRed = round(sum[0] / (float) sum[3]);
-            image[i][j].rgbtGreen = round(sum[1] / (float) sum[3]);
-            image[i][j].rgbtBlue = round(sum[2] / (float) sum[3]);
+            image[i][j].rgbtRed = round(sum[0] / (float)sum[3]);
+            image[i][j].rgbtGreen = round(sum[1] / (float)sum[3]);
+            image[i][j].rgbtBlue = round(sum[2] / (float)sum[3]);
+
+            for (int k = 0; k < 4; k++)
+            {
+                sum[k] = 0;
+            }
+        }
+    }
+
+    return;
+}
+
+// Detect edges
+void edges(int height, int width, RGBTRIPLE image[height][width])
+{
+    RGBTRIPLE img[height][width];
+    int sum[4] = {0, 0, 0, 0};
+
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            img[i][j] = image[i][j];
+        }
+    }
+
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            for (int k = i - 1; k < i + 2; k++)
+            {
+                for (int l = -1; l < 2; l++)
+                {
+                    if (((k >= 0) && (l >= 0)) && ((k < height) && (l < width)))
+                    {
+                        sum[0] += img[k][j + l].rgbtRed * l;
+                        sum[1] += img[k][j + l].rgbtGreen * l;
+                        sum[2] += img[k][j + l].rgbtBlue * l;
+                        sum[3]++;
+                    }
+                }
+            }
 
             for (int k = 0; k < 4; k++)
             {
